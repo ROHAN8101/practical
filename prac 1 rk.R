@@ -355,3 +355,67 @@ for(j in 1:length(n)){
   }
   print(round(est_tpm,2))
 }
+
+
+####-----prac 4:-   branching process --------######
+#Q1:---------
+
+ex=sum(0.2+2*0.15+3*0.1+4*0.05)
+ex2=sum(0.2+4*0.15+9*0.1+16*0.05)
+var=ex2-(ex^2)
+var;ex
+
+z = c()
+z[1] = 1
+p = c(0.5,0.2,0.15,0.1,0.05);p
+s = c(0:4);s     #0:4
+z[2]=sample(s,z[1],prob=p)
+
+for(i in 2:5){
+  print(sample(x=s,size=z[i],prob=p,replace=TRUE))
+  z[i+1] = sum(sample(x=s,size=z[i],prob=p,replace=TRUE)) 
+}
+z
+sum(p*s)
+(sum(p*s))^(length(z))
+
+f= function(s){
+  return(0.5+0.2*s+0.15*s^2+0.1*s^3+0.05*s^4)
+}
+s = seq(from=0,to=1,by=0.001)
+fs = f(s)
+plot(s,fs,type='l')
+abline(0,1)
+
+
+#######-----practiacl 4;; BIBD  ------######
+###Q1:---------
+p=5    #no of tratment
+q=5    #no of block
+r=4    #no of element each row or no of tratment in row or replication
+k=4    #no tratment in each block
+lamda=(k-1)*r/(p-1)
+lamda
+n=r*p
+n
+y= matrix(c(17,0,12,13,14,14,14,10,13,0,0,12,9,12,13,11,13,0,12,11,12,11,8,0,10),nrow=5,ncol=5,byrow=T);y
+nij=ifelse(y!= 0,1,0);nij
+yidot=rowSums(y)
+ydotj=colSums(y)
+ct=sum(y)^2/n
+tss=sum(y^2)-ct
+tss
+ssb=(1/k)*sum(ydotj^2)-ct
+ssb
+Q=c()
+for(i in 1:p){
+  Q[i]=yidot[i] - (1/k)* nij[i,]%*%ydotj
+}
+Q
+sst_adj = (k/(lambda*p)) * sum (Q^2) ; sst_adj
+sse= tss - sst_adj - ssb ;ssb
+mst = SST_adjust /(r-1) ;mst
+mse= sse/ (n-p-q+1) ; mse
+fcal = mst / mse ;fcal
+ftab=qf(0.05,(r-1),(n-p-q+1))
+ftab
