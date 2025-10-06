@@ -1,0 +1,1314 @@
+* create table rk;
+data rk;
+input id age sex $;
+datalines;
+100 25 Male
+102 20 Female
+103 18 Male
+104 18 Male
+;
+run;
+proc print data=rk;
+run;
+* calculate mean, std of age;
+proc means data=rk;
+var age;
+run;
+* if i want standard error value;
+proc means data=rk stderr;
+var age;
+run;
+* i want hbar in 3d for sex;
+proc gchart data=rk;
+hbar3d sex;
+run;
+* i want vbar in  3rd for age;
+proc gchart data=rk;
+vbar3d age;
+run;
+*create bank data;
+data bank;
+input did age sex$;
+cards ;
+1000 25 Male
+2000 26 female
+3000 25 male
+;
+run;
+proc print data= bank;
+run;
+* i want add did to deposite id by use of label after clicking on did it show;
+data bank;
+label did="deposite id";
+input did age sex$;
+cards;
+1000 25 Male
+2000 26 female
+3000 25 male
+;
+run;
+/* if we dont want to title and date time on ouput window not result window use below code*/
+/* title; */
+/* options nodate nonumber; */
+
+proc print data=bank;
+run;
+*if we dont want obs no on result window;
+proc print data=bank noobs;
+run;
+*if i want by default class data from sas;
+proc print data=sashelp.class noobs;
+run;
+* i want data in sasuser;
+/* data sasuser.bank; */
+/* input did age sex$; */
+/* cards; */
+/* 1000 25 male */
+/* 2000 24 female */
+/* 3000 24 male */
+/* ; */
+/* run; */
+
+* create new library not permenant;
+libname myproj "C:\Users\Woods\Desktop\rk";
+data myproj.bank;
+input did age sex$;
+cards;
+1000 23 male
+2000 24 female
+3000 23 female
+;
+run;
+
+*i want permanant then go to new library in explorer window;
+
+* i want check all properties of data ;
+proc contents data=bank;
+run;
+* after that varibales are in alphabetic order to fix it;
+proc contents data=bank varnum;
+run;
+* i want all information in another data name;
+proc contents data=bank varnum out=kk;
+run;
+
+*new data demo data name canot start with number use only underscore except special;
+data demo;
+input x y z;
+cards;
+100 200 300
+400 500 600
+;
+run;
+proc print data=demo;
+run;
+* if we use space between data name then it consist 2 data;
+data my demo1;
+input x y z;
+cards;
+100 200 300
+400 500 600
+;
+run;
+proc print data=demo1;
+run;
+proc print data=my;
+run;
+** it took only 8 charcter;
+data demo;
+input name$ age sex$;
+cards;
+harshwardhan 22 male
+jaywardhan 21 male
+;
+run;
+proc print data=demo;
+run;
+** to fix it ;
+data mydemo;
+length name$20;
+input name$ age sex$;
+cards;
+harshwardhan 22 male
+jaywardhan 21 male
+;
+run;
+proc print data=mydemo;
+run;
+** i want create naidu data set in sasuser;
+data sashelp.naidu;
+input id age name$;
+cards;
+100 25 rk
+200 26 ok
+;
+run;
+*the input statement reads raw data 
+from instream data lines or external files
+-list input
+-column input
+-formatted input
+-named input;
+
+*-list input:----
+it uses scanning method for locating data values
+-data values are required to be aligned in columns but
+must be seprated by atleast one blank;
+ 
+data score;
+length name$20 score1 8 score2 8;
+input name$ score1 score2;
+cards;
+rajshekhar . 100
+harshwardhan 200 300
+;
+run;
+proc print data=score;
+run;
+*-column input ;
+data scores;
+input name $1-21 score1 $22-33 score2 34-50;
+cards;
+what is your name?      A+                  50
+where is your city?                       30
+how are youuuuuuuu?      .                 34
+;
+run; 
+proc print data=scores;
+run;
+***------------------------------------------------------------;
+data employe;
+input ssn $1-9 w2amt $1-12;
+cards;
+23456789
+james smith
+356
+345671234
+jeffrey thomas
+;
+run;
+proc print data=employe;
+run;
+* note: u canot use an informat with column input
+feature of column input include the following:
+*character values can contain embedded blanks.
+*character values can be from 1 to 32767 long.
+* placeorder such as single period (.), are not 
+required for missing data.
+*input values can be read in any order, regardless 
+of their position in the record.;
+
+******--------------------------------------------------------------;
+*by using formatted input you can read
+nonstandard data for which sas requires
+additional instructions.
+
+formatted input is typically used with pointer controls 
+that enable you to control the position of the input pointer
+in the input buffer when u read the data;
+
+data scores;
+input @1name $11. @3score1 $5. @4score2 $6.;
+datalines;
+values can contain embedded blanks
+;
+run;
+proc print data=scores noobs;
+run;
+*-----------------------***;
+data scores;
+input name $11. +3score1 $5. +4score2 $6.;
+datalines;
+values can contain embedded blanks
+;
+run;
+proc print data=scores noobs;
+run;
+***-------------***;
+data scores;
+input name $11. score1 $5. score2 $8;
+datalines;
+values can contain embedded blanks
+;
+run;
+proc print data=scores noobs;
+run;
+**--------------------**;
+**named input method:-  named input in which
+data values are proceded by the name of
+the variable and equal sign(=);
+data game;
+input name=$ score1= score2=$;
+cards;
+name=om score1=2 score2=A
+name=maddy score1=3 score2=B
+
+;
+run;
+proc print data=game;
+run;
+
+data kk;
+a=3;
+b=5;
+c="hi I am here";
+run;         *it give 3 variable with 1 obsn row;
+proc print data=kk;
+run;
+
+data kk;
+a=3;
+b=4;
+c="i am there";
+a=20;
+b=45;
+c="i am a boy";  *it automatically replace values;
+run;
+proc print data=kk;
+run;
+* it gives 3 variable 2 obsn rows;
+data kk;
+a=3;
+b=4;
+c="i am there";
+output;
+a=20;
+b=45;
+c="i am a boy";  *it add values after 1st row;
+output;
+run;
+proc print data=kk;
+run;
+data kk;
+length ssn $15 place $10;
+ssn="naidu";
+place="sas";
+output;
+ssn="online";
+place="tariner";
+output;
+ssn="hyd";
+place=".";
+output;  
+ssn="naidu";
+place="mumbai";
+output;
+;
+run;
+proc print data=kk;
+run;
+proc contents data=kk;
+run;
+**--------practice----------
+for & sign after use spaces to separate the words in column;
+data kk;
+input ssn & $24. place & $6.;
+cards;
+naidu sas online tariner  hyd
+naidu  mumbai
+;
+run;
+proc print data=kk;
+run;
+
+**format and informat statement:
+by informat statement we can read non standard data or invalid 
+data into required data.
+eg. date,time,numeric.
+
+if we read any date value using informat sas
+converts into the numeric format.
+this number is called sas date value.
+if we write the fomat statement in procedural block
+this format is temporary format.
+if we write format statement in dataset block this 
+is permanant format
+
+options  yearcutoff=1850;
+*sas wont be able to read this value if we use dollar sign
+then it will run but only 8 char and not perfect ;
+data medi;
+input pid age jdate;
+informat jdate ddmmyy10.;
+format jdate ddmmyy10.;
+cards;
+100 24 21/05/1920
+200 25 5-8-1991
+300 26 07.09.1992
+400 27 01.01.1960
+;
+run;
+proc print data=medi;
+run;
+* i just want to year month and day format;
+data medi;
+input pid age jdate;
+informat jdate ddmmyy10.;
+format jdate yymmdd10.;
+cards;
+100 24 21/05/1920
+200 25 5-8-1991
+300 26 07.09.1992
+400 27 01.01.1960
+;
+run;
+proc print data=medi;
+run;
+data medi;
+input pid age jdate;
+informat jdate ddmmyy10.;
+format jdate yymmdd10.;
+cards;
+100 24 21/05/1920
+200 25 5-8-1991
+300 26 07.09.1992
+400 27 01.01.1960
+;
+run;
+proc print data=medi;
+run;
+*----------OR--------------;
+data medi;
+input pid age jdate: ddmmyy10.;
+format jdate yymmdd10.;
+cards;
+100 24 21/05/1920
+200 25 5-8-1991
+300 26 07.09.1992
+400 27 01.01.1960
+;
+run;
+proc print data=medi;
+run;
+*--------we use 2 digit for year then by yearcut off after-------------;
+options yearcutoff=1950;
+data medi;
+input pid age jdate: ddmmyy10.;
+format jdate yymmdd10.;
+cards;
+100 24 21/05/20
+200 25 5-8-1991
+300 26 07.09.1992
+400 27 01.01.1960
+;
+run;
+proc print data=medi;
+run;
+*---- 21/12/2023           ddmmyy10.
+23-12-2023                 ddmmyyd10.
+23.12.2023                 ddmmyyp10.
+23:12:2023                 ddmmyyc10.
+23122023                   ddmmyb10.;  
+* informat: it converts datevalue into number
+format: it converts into display date ;
+data medi2;
+input pid age jdate:mmddyy10. ldate:ddmmyy10.;
+cards;
+100 23 10/15/1990 16-06-1990
+101 24 05-08-90 07/09/1991
+102 25 07.09.1992 05-10-1992
+;
+run;
+proc print data=medi2;
+format jdate ddmmyyd10. ldate ddmmyyc10.;
+run;
+proc print data=medi2;
+format jdate ldate ddmmyyc10.;       *it took same for both;
+run;
+proc print data=medi2;
+format jdate ddmmyyc10. ldate ;  *only for jdate and for ldate only number;
+run;
+
+* date values        informat            format
+  12dec2023          date9.            date9.
+  12-dec-2023        date11.           date11.
+  12dec03            date7.            date7.
+  ;
+  
+  data labe;
+  input pid age jdate ldate;
+  informat jdate ldate date11.;
+  cards;
+  11 23 12aug2023 11-dec-2023
+  12 26 19nov2003 18-jan-2004
+  13 27 18dec2004 15-jan-2005
+  ;
+  run;
+  proc print data=labe;
+  format jdate ddmmyy10. ldate date11.;
+  run;
+  **-----
+  date values        informat          format
+  jan2005         monyy7.           monyy7.
+  jan03           monyy5.           monyy5.
+  jan-2023        monyy8.           monyy8.
+  ;
+  data labe;
+  input pid age jdate;
+  informat jdate monyy7.;
+  cards;
+  11 23 aug2023 
+  12 26 nov2003          *it take 1 day before month and year;
+  13 27 dec2004 
+  ;
+  run;
+  proc print data=labe;
+  format jdate ddmmyy10.;
+  run;
+  *** ldate in number i.e julian type then ;
+  data labe;
+  input pid age jdate ldate;
+  informat jdate monyy7. ldate julian7.;
+  cards;
+  11 23 aug2023 2003032   
+  12 26 nov2003 2003075   
+  13 27 dec2004 2003110   
+  ;
+  run;
+*=2003+31+1==1feb2003;
+*2003+31+28+16=16 mar 2003;
+*2003+31+28+31+20=20 Apr 2003;
+proc print data=labe;
+format jdate ldate ddmmyy10.;
+run;
+***we want week also then;
+  data labe;
+  input pid age jdate ;
+  informat jdate monyy7. ;
+  cards;
+  11 23 aug2023    
+  12 26 nov2003    
+  13 27 dec2004    
+  ;
+  run;
+  proc print data=labe;
+  format jdate weekdate34.;
+  run;
+  data labe;
+  input pid age jdate ;
+  informat jdate monyy7. ;
+  cards;
+  11 23 aug2023    
+  12 26 nov2003    
+  13 27 dec2004    
+  ;
+  run;
+  proc print data=labe;
+  format jdate weekdate24.;
+  run;
+   
+  data labe;
+  input pid age jdate ;
+  informat jdate monyy7. ;
+  cards;
+  11 23 aug2023    
+  12 26 nov2003    
+  13 27 dec2004    
+  ;
+  run;
+  proc print data=labe;
+  format jdate weekdate20.;
+  run;
+*****---numeric formats:
+data values     informat     format
+25,000          comma6.      comma6.
+25,25,000       comma9.      comma9.
+$25,000         dollar7.     dollar7.
+;
+data emp;
+input id salary pf;
+informat salary comma6. pf dollar9.;
+cards;
+123 23,000 $2,23000
+125 30,000 $3,00,000
+;
+run;
+proc print data=emp;
+format salary comma6. pf dollar9.;
+run;
+*--------------OR-----------------;
+data emp;
+input id salary:comma6. pf:dollar9.
+cards;
+123 23,000 $2,23000
+125 30,000 $3,00,000
+;
+run;
+proc print data=emp;
+format salary comma5. pf dollar8.;   *it remove comma or dollar if we reduce;
+run;
+**-------
+*dollar after point mean we need 2 point;
+data emp;
+input id salary:comma6. pf:dollar10.;
+cards;
+123 23000 $2,230.82
+125 30,000 $32,400.42
+;
+run;
+proc print data=emp;
+format salary comma6. pf dollar10.2;   
+run;
+**------***********************----------
+if i want 4 digit in last ----------------------------------;
+data emp;
+input id salary:comma6. pf:dollar10.;
+cards;
+123 23000 $2,230.82
+125 30,000 $32,400.42
+;
+run;
+proc print data=emp;
+format salary comma6. pf dollar12.4;   
+run;
+*---in words--------------------------------------;
+data emp;
+input id salary:comma6. pf:dollar10.;
+cards;
+123 23000 $2,230.82
+125 30,000 $32,400.42
+;
+run;
+proc print data=emp;
+format salary comma6. pf words34.;   
+run;
+*------------------*time informats:---
+data values            informat         format
+10:12:30               time8.           time8.          #24 hrs format
+02:12:30pm             time10.          timeampm10.     #12 hrs format
+12dec2023:14:12:23     datetime18.    datetime18.
+12dec2003:10:12:23pm   datetime20.    dateampm20.
+;
+data labe;
+input id jtime:time10. ltime:time8.;
+cards;
+100 05:12:51am 14:23:54
+200 02:11:55pm 00:01:00
+;
+run;
+proc print data=labe;
+format jtime time10. ltime timeampm8.;
+run;
+*---- datetime ------;
+data mayur;
+input id age dtime:datetime20.;
+cards;
+100 24 12dec2023:14:02:53
+200 25 15jan2003:09:01:00am
+;
+run;
+proc print data=mayur;
+format dtime dateampm20.;
+run;
+*---H.w : percentage format----;
+
+***Infile options:-
+dealing with missing data;
+*if we use . for missing value then in output 
+is CHARCTER missing values always written in ouput by blank only
+and numeric missing value written in dot ;
+data trials;
+input center$ trial$ sub;
+cards;
+applo phase1 78
+nims   .     89
+care  phase3 90
+appl  phase4  .
+;
+run;
+proc print data=trials;
+run;
+
+*****infile data
+data missing;
+infile "/home/u64355055/dataset/missing data.txt"missover;
+input x y z;
+run;
+proc print data=missing;
+run;
+
+data missing;
+infile cards missover;
+input x y z;
+cards;
+11 1 78
+12 2 89
+13 3 56
+14 2 
+15 2 79
+16 80 
+;
+run;
+proc print data=missing;
+run;
+*demonstrating the infile statement using dsd for local data.
+tab separated dlm='09'x;
+data clin;
+infile cards dlm=",$& ";
+input pid name$ age gender$;
+cards;
+123,kiran$24&male
+145&kumar,25 male
+134,ramya,25,female
+;
+run;
+proc print data=clin;
+run;
+*------------------------------------------;
+data clin;
+infile cards dlm=",";
+input pid name$ age gender$;
+cards;
+123,kiran,24,male
+145,kumar,25,male
+134,ramya,25,female
+;
+run;
+proc print data=clin;
+run;
+ *----------------OR----------------------------;
+ data clin;
+infile cards dsd;
+input pid name$ age gender$;
+cards;
+123,kiran,24,male
+145,kumar,25,male
+134,ramya,25,female
+;
+run;
+proc print data=clin;
+run;
+***************************************-----------------;
+*demostrating infile statement using dsd for
+importing external file;
+data demo;
+infile "/home/u64355055/commadata.txt" dsd;
+input x y z;
+run;
+proc print data=demo;
+run;
+*demostrating infile statement using dsd for
+removing the single and double quotes;
+
+ data clin;
+infile cards dlm=",''""";
+input pid name$ age gender$;
+cards;
+123,'kiran',24,male
+145,kumar,25,"male"
+134,ramya,"25",female
+;
+run;
+proc print data=clin;
+run;
+*or by dsd------------;
+ data clin;
+infile cards dsd;
+input pid name$ age gender$;
+cards;
+123,'kiran',24,male
+145,kumar,25,"male"
+134,ramya,"25",female
+;
+run;
+proc print data=clin;
+run;
+*special symbol dsd not work like$@&-----------;
+
+**reading a portion of raw data file.
+scan over to find out specific word and to
+read the remaining data values for required 
+variables;
+**i want to find specific information for care;
+data lab;
+input @'care' trails$ sub;
+cards;
+applo phase1 78
+nims phase1 45
+care pahse1 89
+applo phase2 45
+nims phase2 67
+care phase2 88
+;
+run;
+proc print data=lab;
+run;
+
+**import data from 1st obsn specify;
+data lab;
+infile '/home/u64355055/commadata.txt' dsd obs=10;
+input x y z;
+run;
+proc print data=lab;
+run;
+*i want obsn from 3 to 13 only;
+data lab;
+infile '/home/u64355055/commadata.txt' dsd firstobs=3 obs=13;
+input x y z;
+run;
+proc print data=lab;
+run;
+
+*csv file;
+data csv;
+infile "/home/u64355055/sascsv.csv" dsd;
+input x$ y;
+run;
+proc print data=csv;
+run;
+*********or-------;
+data csv;
+infile "/home/u64355055/sascsv.csv" dlm=",";
+input x$ y;
+run;
+proc print data=csv;
+run;
+ *Global options-using these options
+
+ we can manage the SAS window environment
+
+
+Once you use the global options it remains active
+
+until you close the SAS session or you inactviate those
+
+global options.
+
+Global options you can write anywhere in your coding
+
+except in the cards statement. "/
+
+PORTABLE OPTIONS:      Output (Untitled
+
+
+TITLE                  title of the out put
+
+FOOTNOTE               Footr of the out put page
+
+NOCAPS                 Translate quoted strings and titles to upper case?
+
+CENTER                 Center SAS output?
+
+DATE                   Date printed in title?
+
+ERRORS=20              Maximum number of observations with error messages
+
+FIRSTOBS=1.            First observation of each data set to be processed
+
+FMTERR                 Treat missing format or informat as an error?
+
+LABEL                  Allow procedures to use variable labels?
+
+LINESIZE=64            Line size for printed output
+
+MISSING=.               Character printed to represent numeric missing values
+
+NOTES                  Print SAS notes on log?
+
+NUMBER                 Print page number on each page of SAS output?
+
+OBS=MAX                Number of last observation to be processed
+
+PAGENO=1               Resets the current page number on the print file
+
+PAGESIZE=78            Number of lines printed per page of output
+
+REPLACE                Allow replacement of permanent SAS data sets?
+source                 list sas source statements on log
+yearcutoff=1920        cutoff year for date7. informat
+;
+*title :----;
+title "this is rk database";
+data lab;
+input x y;
+cards;
+1 2
+2 7
+;
+run;
+proc print data=lab;
+run;
+* i have 2 title;
+title1 "this is rk database";
+title2 "welcome to rk world";
+data lab;
+input x y;
+cards;
+1 2
+2 7
+;
+run;
+proc print data=lab;
+run;
+
+*i want bank title;
+title;
+data lab;
+input x y;
+cards;
+1 2
+2 7
+;
+run;
+proc print data=lab;
+run;
+*title 10 ------------------------------------;
+title1 "this is rk database";
+title2 "welcome to rk world";
+title10 "end";
+data lab;
+input x y;
+cards;
+1 2
+2 7
+;
+run;
+proc print data=lab;
+run;
+****same thing for footnote i.e fotter;
+footnote1 "this is rk database";
+footnote2 "welcome to rk world";
+footnote10 "end";
+data lab;
+input x y;
+cards;
+1 2
+2 7
+;
+run;
+proc print data=lab;
+run;
+* i want output in not in a center also nodate ,nonumber;
+options nocenter nodate nonumber;
+data lab;
+input x y;
+cards;
+1 2
+2 7
+;
+run;
+proc print data=lab;
+run;
+*i want increase line size of row and page size with footer
+as to see we can see it in sas output window.
+also i want page number as 2;
+options ls=200 ps=30 pageno=2;
+footnote "this is end";
+data lab;
+input x y;
+cards;
+1 2
+2 7
+;
+run;
+proc print data=lab;
+run;
+*suppose i want no notes and source in log window;
+options nonotes nosource;
+data lab;
+input x y;
+cards;
+2 3
+4 5
+;
+run;
+proc print data=lab;
+run;
+*i want it ;
+options notes source;
+data lab;
+input x y;
+cards;
+2 3
+4 5
+;
+run;
+proc print data=lab;
+run;
+*in sas its all data automatically save in work library;
+options user=work;
+data kk;
+input x$ y;
+cards;
+rk 23
+ok 24
+;
+run;
+proc print data=kk;
+run;
+*caps---capital letters and nocaps--------;
+options caps;
+data kk;
+input x$ y;
+cards;
+rk 23
+ok 24
+;
+run;
+proc print data=kk;
+run;
+options nocaps;
+data kk;
+input x$ y;
+cards;
+Rk 23
+ok 24
+;
+run;
+proc print data=kk;
+run;
+*by error=20:- we get only 1st 20 error in log;
+** firstobs=1 then start from 1 obsn and
+firstobs=2 it take from 3 obsn;
+options firstobs=2;
+data kk;
+input x$ y;
+cards;
+Rk 23
+ok 24
+Rk 25
+ok 26
+;
+run;
+proc print data=kk;
+run;
+* missing :-----;
+options missing=" ";
+data kk;
+input x$ y;
+cards;
+Rk 23
+ok .
+ .  25
+ok 26
+;
+run;
+proc print data=kk;
+run;
+**for only numeric;
+options missing=".";
+data kk;
+input x$ y;
+cards;
+Rk 23
+ok .
+ .  25
+ok 26
+;
+run;
+proc print data=kk;
+run;
+options missing="0";
+data kk;
+input x$ y;
+cards;
+Rk 23
+ok .
+ .  25
+ok 26
+;
+run;
+proc print data=kk;
+run;
+*numeric and character format:
+*numeric to charcter--------;
+data lab;
+input pid age race sex;
+cards;
+12 32 1 1
+16 26 2 2
+13 50 7 2
+14 35 3 2
+14 36 7 2
+15 37 8 1
+16 36 77 1
+;
+run;
+proc format;
+value naidu
+1="causian"
+2="black"
+3="asian"
+7="native american"
+8="pacific islander"
+77="unknown"
+;
+value s
+1="male"
+2="female"
+;
+run;
+proc print data=lab;
+format race naidu. sex s.;
+run;
+
+*character to character--;
+data med;
+input pid center$ drug$;
+cards;
+14 nims A
+17 care B
+19 kims C
+30 appolo D
+;
+run;
+proc format;
+value $d
+"A"="drug 300 mg"
+"B"="drug 150 mg"
+"C"="drug 75 mg"
+"D"="drug 5 mg"
+;
+run;
+proc print data=med;
+format drug $d.;
+run;
+**charcter to numeric;
+data lab;
+input x y$;
+cards;
+1 12
+5 null
+6 17
+8 null
+;
+run;
+proc format;
+value $de
+"null"=0
+;
+run;
+proc print data=lab;
+format y $de2.;               *we want digit so;
+run;
+*numeric to numeric----------;
+data lab;
+input id week$ dose;
+cards;
+100 week1 1
+101 week2 2
+102 week3 1
+103 week4 3
+;
+run;
+proc format;
+value dos
+1=0.6
+2=0.8
+3=0.5
+;
+run;
+proc print data=lab;
+format dose dos.;
+run;
+****proc format only for exiting data;
+proc format;
+value s
+1="male"
+2="female"
+;
+run;
+data lab;
+infile "/home/u64355055/commadata.txt" dsd;
+input id sex age;
+run;
+proc print data=lab;
+format sex s.;
+run;
+
+*printing a saved program library;
+*fmtlib gives all format we created ;
+proc format library=work fmtlib cntout=oo;
+run;
+proc format library=work fmtlib cntin=oo;    *we can choose other library also;
+run;
+*specific format with name;
+proc format library=work fmtlib;
+select s;
+run;
+*options nofmterr: it is no format error shows;
+
+***specifying ranges and key words(low high ) in proc format;
+data lab;
+input x age;
+cards;
+1 12 
+2 14
+3 18
+4 24
+;
+run;
+proc format;
+value x
+0-12="young"
+13-18="mature"
+19-25="old"
+;
+run;
+proc print data=lab;
+format age x.;
+run;
+
+*******dataset options----------;
+data trial3;
+input pid age name$ center$ area$;
+cards;
+100 24 kiran applo hyd
+101 25 kumar care vij
+102 26 madhu nims nir
+103 32 mohan care wng
+;
+run;
+proc print data=trial3;
+run;
+*replace  option- dataset block has overwrite 
+capablity default replace=yes,
+if an dataset is already existed and we 
+dont want to overwrite we use replace=no; ;
+data trial3 (replace=no);
+input pid age;
+cards;
+100 24
+101 26
+;
+run;    *to run it change data name;
+proc print data=trial3;
+run;
+***password to see data;
+data lab(password=apple);
+input pid age;
+cards;
+100 24
+101 26
+;
+run; 
+proc print data=lab;
+run;   *open only in library by using pass;
+
+******read option - using we can give reading stability for
+others but cannot change any just for read only;
+data lab (password=apple read=orange);
+input pid age;
+cards;
+100 24
+101 26
+;
+run; 
+proc print data=lab;
+run;
+
+***first obsn and obs get data in
+sequential order ;
+data lab1;
+input id week$ dose;
+cards;
+100 week1 1
+101 week2 2
+102 week3 1
+103 week4 3
+;
+run;
+proc print data=lab1;
+run;
+proc print data=lab1 (firstobs=2 obs=4);
+run;
+***applying new label to dataset;
+data lab1;
+label id= "patient id"
+dose="corona dose";
+input id week$ dose;
+cards;
+100 week1 1
+101 week2 2
+102 week3 1
+103 week4 3
+;
+run;
+proc print data=lab1 label;
+run;
+*set statement using existed dataset to a
+other dataset;
+data lab;
+input pid age name$ center$ area$;
+cards;
+100 24 kiran applo hyd
+101 25 kumar care vij
+102 26 madhu nims nir
+103 32 mohan care wng
+;
+run;
+proc print data=lab;
+run;
+data anthony;
+set lab;
+run;
+proc print data=anthony;
+run;
+data trial;
+set anthony;
+run;
+proc print data=trial;
+run;
+**drop option: we can drop variables;
+data king;
+set trial (drop=pid age);
+run;
+proc print data=king;
+run;
+*same keep option only to keep variables;
+data ll;
+set trial (keep= pid age);
+run;
+proc print data=ll;
+run;
+*rename the variable;
+data mm;
+set ll (rename=(pid=id age=dage));
+run;
+proc print data=mm;
+run;
+***where option:-;
+proc print data=anthony;
+run;
+*i want only cares obsn;
+data w;
+set anthony (where=(center="care"));
+run;
+proc print data=w;
+run;
+*firstobs and obs-------------;
+proc print data=anthony;
+run;
+data f;
+set anthony (firstobs=2 obs=4);
+run;
+proc print data=f;
+run;
+
+* randomly selected observation to gets parts of data;
+data rk;
+set anthony;
+if _n_=1 then output;
+if _n_=2 then output;
+if _n_=4 then output;
+run;
+proc print data= rk;
+run;
+*** demostrating the set with two datasets;
+data x;
+input pid age genders$;
+cards;
+100 20 male
+200 40 female
+;
+run;
+data y;
+input pid age sex$;
+cards;
+101 20 female
+201 30 male
+;
+run;
+proc print data= x;
+run;
+
